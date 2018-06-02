@@ -18,7 +18,7 @@ class AlmostPerfectModel(Model):
 		if x in self.table:
 			return 1
 		else:
-			if random.random() < fp.rate:
+			if random.random() < self.fp_rate:
 				return 1
 			else: 
 				return 0
