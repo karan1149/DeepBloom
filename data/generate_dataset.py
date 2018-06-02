@@ -1,5 +1,7 @@
 import json
 import os
+import random
+random.seed(42)
 
 dataset_path = 'shallalist/'
 desired_positive_categories = ['porn', 'models']
@@ -38,6 +40,9 @@ def generate_dataset(dataset_path, desired_positive_categories, desired_negative
 			positives += urls
 		else:
 			negatives += urls
+
+	random.shuffle(positives)
+	random.shuffle(negatives)
 
 	print("Number of positives:", len(positives))
 	print("Number of negatives:", len(negatives))
