@@ -16,11 +16,6 @@ for tup in folders:
 
 desired_negative_categories = list(set(desired_negative_categories) - set(desired_positive_categories))
 
-
-
-# desired_negative_categories = ['downloads', 'drugs', 'education/schools', 'finance/banking', 'finance/insurance', 'finance/moneylending', 'finance/other', 'finance/realestate', 'finance/trading', 'fortunetelling', 'forum', 'gamble', 'government', 'hacking', ]
-
-
 # Generates a JSON dataset for positives and negatives from the Shallist set of blacklists
 def generate_dataset(dataset_path, desired_positive_categories, desired_negative_categories, save_path="dataset.json"):
 
@@ -41,11 +36,34 @@ def generate_dataset(dataset_path, desired_positive_categories, desired_negative
 		else:
 			negatives += urls
 
+	initial_positive_length = len(positives)
+	initial_negative_length = len(negatives)
+
+	# Ensures no duplicates within lists
+	positives = set(positives)
+	negatives = set(negatives)
+
+	print(initial_positive_length - len(positives), "duplicate positives removed.")
+	print(initial_negative_length - len(negatives), "duplicate negatives removed.")
+
+	count = 0
+	for x in positives:
+		if x in negatives:
+			negatives.remove(x)
+			count += 1
+	print(count, "duplicates removed across lists by removing from negatives.")
+
+	positives = list(positives)
+	negatives = list(negatives)
+
 	random.shuffle(positives)
 	random.shuffle(negatives)
 
 	print("Number of positives:", len(positives))
 	print("Number of negatives:", len(negatives))
+
+	# Ensures no duplicates across lists
+	assert(len(set(positives + negatives)) == len(positives) + len(negatives))
 
 	with open(save_path, 'w') as f:
 		json.dump({"positives": positives, "negatives": negatives}, f)
