@@ -19,11 +19,11 @@ class DeepBloom(object):
     def createBloomFilter(self):
         self.bloomFilter = BloomFilter(
             len(self.data.positives),
-            .001,
+            self.fp_rate / 2,
             self.string_digest
         )
         for positive in self.data.positives:
-            if not self.model.predict(positive):
+            if self.model.predict(positive) <= threshold:
                 self.bloomFilter.add(positive)
 
 
