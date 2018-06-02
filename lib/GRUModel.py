@@ -4,8 +4,8 @@ class GRUModel(Model):
 	def __init__(self):
 		pass
 
-	def fit(X, y):
+	def fit(self, X, y):
 		pass
 
-	def predict(x):
+	def predict(self, x):
 		pass
