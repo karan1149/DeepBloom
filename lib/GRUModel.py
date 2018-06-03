@@ -18,6 +18,7 @@ class GRUModel(Model):
 		self.batch_size = batch_size
 		self.gru_size = gru_size
 		self.hidden_size = hidden_size
+		self.second_gru_size = second_gru_size
 
 	def fit(self, text_X, text_y):
 
