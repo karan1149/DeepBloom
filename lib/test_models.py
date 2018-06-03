@@ -72,10 +72,10 @@ def test_gru_model(positives, negatives, data_fraction=1.0, fp_rate=0.01, lr=0.0
     print(len(positives), len(negatives_train), len(negatives_dev), len(negatives_test))
 
     model = GRUModel('../data/glove.6B.50d-char.txt', 50, lr, pca_embedding_dim=pca_embedding_dim, maxlen=maxlen, gru_size=gru_size, batch_size=batch_size)
-    print(model.model.summary())
     shuffled = shuffle_for_training(negatives_train, positives)
 
     model.fit(shuffled[0], shuffled[1])
+    print(model.model.summary())
     # model.save('model_test.h5')
     # model = load_model('model_test.h5')
 
