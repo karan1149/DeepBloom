@@ -1,6 +1,7 @@
 from BloomFilter import BloomFilter
 import math
 import random
+import mmh3
 
 class DeepBloom(object):
     def __init__(self, model, data, fp_rate):
@@ -8,7 +9,7 @@ class DeepBloom(object):
         self.threshold = 0
         self.fp_rate = float(fp_rate)
         self.data = data
-        self.train()
+        self.fit()
         self.createBloomFilter()
 
     def check(self, item):
@@ -23,13 +24,14 @@ class DeepBloom(object):
             self.string_digest
         )
         for positive in self.data.positives:
-            if self.model.predict(positive) <= threshold:
+            if self.model.predict(positive) <= self.threshold:
                 self.bloomFilter.add(positive)
 
 
 
+
     ## For now, only train the first model.
-    def train(self):
+    def fit(self):
 
         ## Split negative data into subgroups.
         (s1, s2, s3) = self.split_negatives()
@@ -61,5 +63,5 @@ class DeepBloom(object):
         random.shuffle(combined)
         return list(zip(*combined))
 
-    def string_digest(item, index):
+    def string_digest(self, item, index):
         return mmh3.hash(bytes(item, 'utf-8'), index)
