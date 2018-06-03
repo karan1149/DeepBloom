@@ -14,15 +14,15 @@ def generate_random_string(N):
 
 #### Tests
 def simple_test():
-    bf = BloomFilter(10000, .001, get_digest)
-    for i in range(10000):
+    bf = BloomFilter(1000, .001, get_digest)
+    for i in range(1000):
         bf.add(i)
         if not bf.check(i):
             print("False Negative!")
 
     count = 0.0
     fp = 0.0
-    for i in range(10001, 100000):
+    for i in range(1001, 10000):
         if bf.check(i):
             fp+=1
         count += 1
@@ -30,17 +30,15 @@ def simple_test():
     print("False Positive Rate: " + str(fp / count))
 
 def string_test():
-    bf = BloomFilter(10000, .001, string_digest)
-    for i in range(10000):
-        if i % 1000 == 0:
-            print("hello") 
+    bf = BloomFilter(1000, .001, string_digest)
+    for i in range(1000):
         random_string = generate_random_string(i)
         bf.add(random_string)
         assert(bf.check(random_string))
 
     count = 0.0
     fp = 0.0
-    for i in range(10001, 100000):
+    for i in range(1001, 10000):
         random_string = generate_random_string(i)
         if bf.check(random_string):
             fp+=1
