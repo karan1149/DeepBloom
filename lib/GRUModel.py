@@ -55,7 +55,7 @@ class GRUModel(Model):
 		optimizer = optimizers.Adam(lr=self.lr, decay=0.0001)
 		self.model.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accuracy'])
 
-		self.model.fit(X, y, batch_size=8192, epochs=30)
+		self.model.fit(X, y, batch_size=2048, epochs=30)
 		self.model.save("model.h5")
 		# self.model = load_model('model.h5')
 
@@ -68,7 +68,7 @@ class GRUModel(Model):
 		        break
 		    x[0, t + offset] = self.char_indices[char]
 		pred = self.model.predict(x)
-		return pred[0]
+		return pred[0][0]
 
 	# Like predict, but you pass in an array of URLs, and it is all
 	# vectorized in one step, making it more efficient
@@ -80,5 +80,5 @@ class GRUModel(Model):
 			    if t >= self.maxlen:
 			        break
 			    X[i, t + offset] = self.char_indices[char]
-		preds = self.model.predict(X)
+		preds = [pred[0] for pred in self.model.predict(X)]
 		return preds
