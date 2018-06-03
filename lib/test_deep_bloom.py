@@ -17,13 +17,18 @@ class TestDeepBloom(object):
         fp_rate = .05
         data = Data()
         db = DeepBloom(AlmostPerfectModel(fp_rate), data, fp_rate)
-        count = 0.0
         false_positives = 0.0
+        false_negatives = 0.0
+
+        for positive in data.positives:
+            if not db.check(positive):
+                false_negatives+= 1
+
         for negative in data.negatives:
-            count += 1
             if db.check(negative):
                 false_positives+= 1
 
-        print("False Positive Rate: " + str(false_positives / count))
+        print("False Negative Rate: " + str(100* false_negatives / len(data.positives)) + "%")
+        print("False Positive Rate: " + str(100* false_positives / len(data.negatives)) + "%")
 
 TestDeepBloom().test_almost_perfect_model()
