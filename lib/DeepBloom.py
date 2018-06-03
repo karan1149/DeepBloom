@@ -21,7 +21,7 @@ class DeepBloom(object):
     def create_bloom_filter(self, data):
         self.bloom_filter = BloomFilter(
             len(data.negatives),
-            self.fp_rate / 2,
+            2*self.fp_rate,
             string_digest
         )
         for positive in data.positives:
@@ -55,10 +55,3 @@ class DeepBloom(object):
         s1 = data.negatives[0:math.floor(.8*size)]
         s2 = data.negatives[math.floor(.8*size):math.floor(.9*size)]
         return (s1, s2)
-
-    # def shuffle_for_training(self, negatives, positives):
-    #     a = [(i, 0) for i in negatives]
-    #     b = [(i, 1) for i in positives]
-    #     combined = a + b
-    #     random.shuffle(combined)
-    #     return list(zip(*combined))
