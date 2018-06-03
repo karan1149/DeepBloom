@@ -43,6 +43,10 @@ class DeepBloom(object):
         shuffled = shuffle_for_training(s1, data.positives)
         self.model.fit(shuffled[0], shuffled[1])
 
+        print("s1 results", test_model(self.model, s1, [0 for _ in range(len(s1))]))
+        print("s2 results", test_model(self.model, s2, [0 for _ in range(len(s2))]))
+        print("pos results", test_model(self.model, data.positives, [1 for _ in range(len(data.positives))]))
+
         ## We want a threshold such that at most s2.size * fp_rate/2 elements
         ## are greater than threshold.
         fp_index = math.ceil((len(s2) * (1 - self.fp_rate/2)))
