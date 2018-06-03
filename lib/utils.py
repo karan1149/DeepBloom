@@ -77,3 +77,35 @@ def test_model(model, text_X, text_y):
             else: 
                 false_negatives += 1
     return total_correct / total, false_positives / total, false_negatives / total
+
+
+def evaluate_model(model, positives, negatives_train, negatives_dev, negatives_test, threshold):
+    false_negatives = 0.0
+    preds = model.predicts(positives)
+    for pred in preds:
+        if pred <= threshold:
+            false_negatives += 1
+
+    print(false_negatives / len(positives), "false negatives for positives set.")
+
+    false_positives_train = 0.0
+    preds = model.predicts(negatives_train)
+    for pred in preds:
+        if pred > threshold:
+         false_positives_train += 1
+
+    false_positives_dev = 0.0
+    preds = model.predicts(negatives_dev)
+    for pred in preds:
+        if pred > threshold:
+         false_positives_dev += 1
+
+    false_positives_test = 0.0
+    preds = model.predicts(negatives_test)
+    for pred in preds:
+        if pred > threshold:
+         false_positives_test += 1
+
+    print(false_positives_train / len(negatives_train), "false positive rate for train.")
+    print(false_positives_dev / len(negatives_dev), "false positive rate for dev.")
+    print(false_positives_test / len(negatives_test), "false positive rate for test.")
