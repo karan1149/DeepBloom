@@ -8,13 +8,15 @@ from sklearn.decomposition import PCA
 import numpy as np
 
 class GRUModel(Model):
-	def __init__(self, embeddings_path, embedding_dim, lr, maxlen=50, pca_embedding_dim=None):
+	def __init__(self, embeddings_path, embedding_dim, lr, maxlen=50, pca_embedding_dim=None, batch_size=1024, gru_size=16):
 		self.embeddings_path = embeddings_path
 		self.embedding_dim = embedding_dim
 		self.lr = lr
 		self.maxlen = maxlen
 		self.pca_embedding_dim = pca_embedding_dim
 		self.model = None
+		self.batch_size = batch_size
+		self.gru_size = gru_size
 
 	def fit(self, text_X, text_y):
 
@@ -48,14 +50,14 @@ class GRUModel(Model):
 		self.model = Sequential([
 		    Embedding(num_chars + 1, self.embedding_dim if not self.pca_embedding_dim else self.pca_embedding_dim, input_length=self.maxlen,
     weights=[embedding_matrix] if not self.pca_embedding_dim else [embedding_matrix_pca]),
-		    GRU(16),
+		    GRU(self.gru_size),
 		    Dense(1),
 		    Activation('sigmoid'),
 		])
 		optimizer = optimizers.Adam(lr=self.lr, decay=0.0001)
 		self.model.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accuracy'])
 
-		self.model.fit(X, y, batch_size=2048, epochs=30)
+		self.model.fit(X, y, batch_size=self.batch_size, epochs=30)
 		self.model.save("model.h5")
 		# self.model = load_model('model.h5')
 

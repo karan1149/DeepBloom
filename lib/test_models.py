@@ -60,8 +60,7 @@ def test_almost_perfect_model(positives, negatives):
     print(false_positives_test / len(negatives_test), "false positive rate for test.") 
 
 
-def test_gru_model(positives, negatives, data_fraction=1.0, fp_rate=0.01):
-    
+def test_gru_model(positives, negatives, data_fraction=1.0, fp_rate=0.01, lr=0.001, pca_embedding_dim=None, maxlen=50, gru_size=16):
     positives = positives[:int(data_fraction * len(positives))]
     negatives = negatives[:int(data_fraction * len(negatives))]
 
@@ -72,7 +71,7 @@ def test_gru_model(positives, negatives, data_fraction=1.0, fp_rate=0.01):
     print("Split sizes:")
     print(len(positives), len(negatives_train), len(negatives_dev), len(negatives_test))
 
-    model = GRUModel('../data/glove.6B.50d-char.txt', 50, 0.001, pca_embedding_dim=16)
+    model = GRUModel('../data/glove.6B.50d-char.txt', 50, lr, pca_embedding_dim=pca_embedding_dim, maxlen=maxlen, gru_size=gru_size)
     shuffled = shuffle_for_training(negatives_train, positives)
 
     model.fit(shuffled[0], shuffled[1])
@@ -109,6 +108,6 @@ if __name__=='__main__':
     print("Testing almost perfect...")
     test_almost_perfect_model(positives, negatives)
     print("Testing GRU model...")
-    test_gru_model(positives, negatives, data_fraction=0.5, fp_rate=0.01)
+    test_gru_model(positives, negatives, data_fraction=0.5, fp_rate=0.01, pca_embedding_dim=16, lr=0.001, maxlen=50, gru_size=16)
 
 
