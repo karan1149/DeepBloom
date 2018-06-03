@@ -4,13 +4,16 @@ from keras.models import Sequential, load_model
 from keras.layers import Dense, Activation, Embedding
 from keras.layers import LSTM, Input, GRU
 from keras import optimizers
+from sklearn.decomposition import PCA
+import numpy as np
 
 class GRUModel(Model):
-	def __init__(self, embeddings_path, embedding_dim, lr, maxlen=50):
+	def __init__(self, embeddings_path, embedding_dim, lr, maxlen=50, pca_embedding_dim=None):
 		self.embeddings_path = embeddings_path
 		self.embedding_dim = embedding_dim
 		self.lr = lr
 		self.maxlen = maxlen
+		self.pca_embedding_dim = pca_embedding_dim
 		self.model = None
 
 	def fit(self, text_X, text_y):
@@ -31,11 +34,20 @@ class GRUModel(Model):
 		    embedding_vector = embedding_vectors.get(char)
 		    assert(embedding_vector is not None)
 		    embedding_matrix[i] = embedding_vector
+
+		print(embedding_matrix.shape)
+
+		if self.pca_embedding_dim:
+		    pca = PCA(n_components=self.pca_embedding_dim)
+		    pca.fit(embedding_matrix[1:])
+		    embedding_matrix_pca = np.array(pca.transform(embedding_matrix[1:]))
+		    embedding_matrix_pca = np.insert(embedding_matrix_pca, 0, 0, axis=0)
+		    print("PCA matrix created")
 		    
 	
 		self.model = Sequential([
-		    Embedding(num_chars + 1, self.embedding_dim, input_length=self.maxlen,
-    weights=[embedding_matrix]),
+		    Embedding(num_chars + 1, self.embedding_dim if not self.pca_embedding_dim else self.pca_embedding_dim, input_length=self.maxlen,
+    weights=[embedding_matrix] if not self.pca_embedding_dim else [embedding_matrix_pca]),
 		    GRU(16),
 		    Dense(1),
 		    Activation('sigmoid'),
@@ -57,3 +69,16 @@ class GRUModel(Model):
 		    x[0, t + offset] = self.char_indices[char]
 		pred = self.model.predict(x)
 		return pred[0]
+
+	# Like predict, but you pass in an array of URLs, and it is all
+	# vectorized in one step, making it more efficient
+	def predicts(self, text_X):
+		X = np.zeros((len(text_X), self.maxlen), dtype=np.int)
+		for i in range(len(text_X)):
+			offset = max(self.maxlen - len(text_X[i]), 0)
+			for t, char in enumerate(text_X[i]):
+			    if t >= self.maxlen:
+			        break
+			    X[i, t + offset] = self.char_indices[char]
+		preds = self.model.predict(X)
+		return preds
