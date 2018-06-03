@@ -90,7 +90,6 @@ def test_gru_model(positives, negatives, data_fraction=1.0, fp_rate=0.01):
     preds = model.predicts(negatives_dev)
     preds.sort()
     fp_index = math.ceil((len(negatives_dev) * (1 - fp_rate)))
-    print(preds, len(negatives_dev), fp_rate, fp_index, [pred > preds[fp_index] for pred in preds])
     threshold = preds[fp_index]
 
     print("Using threshold", threshold) 
@@ -110,6 +109,6 @@ if __name__=='__main__':
     print("Testing almost perfect...")
     test_almost_perfect_model(positives, negatives)
     print("Testing GRU model...")
-    test_gru_model(positives, negatives, data_fraction=0.1, fp_rate=0.01)
+    test_gru_model(positives, negatives, data_fraction=0.5, fp_rate=0.01)
 
 
