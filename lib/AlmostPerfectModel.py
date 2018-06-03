@@ -1,5 +1,8 @@
 from Model import Model
 import random
+import mmh3
+
+DISCRETE_SIZE = 1000
 
 # Model for testing purposes that stores a set of the values
 # and has a given false positive rate by randomly predicting 
@@ -18,7 +21,7 @@ class AlmostPerfectModel(Model):
 		if x in self.table:
 			return 1
 		else:
-			if random.random() < self.fp_rate:
+			if mmh3.hash(x) % DISCRETE_SIZE < self.fp_rate * DISCRETE_SIZE:
 				return 1
 			else: 
 				return 0
