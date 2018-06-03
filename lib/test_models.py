@@ -1,14 +1,12 @@
 from PerfectModel import PerfectModel
 from AlmostPerfectModel import AlmostPerfectModel
+from GRUModel import GRUModel
 import json
+from utils import *
+from keras.models import load_model
+import math
 
-with open('../data/dataset.json', 'r') as f:
-	dataset = json.load(f)
-
-positives = dataset['positives']
-negatives = dataset['negatives']
-
-def test_perfect_model():
+def test_perfect_model(positives, negatives):
 	print(len(positives))
 
 	negatives_train = negatives[0: int(len(negatives) * .8)]
@@ -32,7 +30,7 @@ def test_perfect_model():
 		assert(model.predict(x) == 0)
 
 
-def test_almost_perfect_model():
+def test_almost_perfect_model(positives, negatives):
 	print(len(positives))
 
 	negatives_train = negatives[0: int(len(negatives) * .8)]
@@ -61,10 +59,56 @@ def test_almost_perfect_model():
 	print(false_positives_train / len(negatives_train), "false positive rate for train.")
 	print(false_positives_test / len(negatives_test), "false positive rate for test.") 
 
+
+def test_gru_model(positives, negatives, data_fraction=1.0, fp_rate=0.01):
+	
+	positives = positives[:int(data_fraction * len(positives))]
+	negatives = negatives[:int(data_fraction * len(negatives))]
+
+	negatives_train = negatives[0: int(len(negatives) * .8)]
+	negatives_dev = negatives[int(len(negatives) * .8): int(len(negatives) * .9)]
+	negatives_test = negatives[int(len(negatives) * .9): ]
+
+	print("Split sizes:")
+	print(len(positives), len(negatives_train), len(negatives_dev), len(negatives_test))
+
+	model = GRUModel('../data/glove.6B.50d-char.txt', 50, 0.001, pca_embedding_dim=16)
+	shuffled = shuffle_for_training(negatives_train, positives)
+
+	model.fit(shuffled[0], shuffled[1])
+	# model.save('model_test.h5')
+	# model = load_model('model_test.h5')
+
+	print("Using threshold 0.5")
+
+	threshold = 0.5
+
+	evaluate_model(model, positives, negatives_train, negatives_dev, negatives_test, threshold)
+
+	print("Getting threshold for fp_rate", fp_rate)
+
+	preds = model.predicts(negatives_dev)
+	preds.sort()
+	fp_index = math.ceil((len(negatives_dev) * (1 - fp_rate)))
+	threshold = preds[fp_index]
+
+	print("Using threshold", threshold) 
+
+	evaluate_model(model, positives, negatives_train, negatives_dev, negatives_test, threshold)
+
 if __name__=='__main__':
-	print("Testing perfect...")
-	test_perfect_model()
-	print("Testing almost perfect...")
-	test_almost_perfect_model()
+
+	with open('../data/dataset.json', 'r') as f:
+	    dataset = json.load(f)
+
+	positives = dataset['positives']
+	negatives = dataset['negatives']
+
+	# print("Testing perfect...")
+	# test_perfect_model(positives, negatives)
+	# print("Testing almost perfect...")
+	# test_almost_perfect_model(positives, negatives)
+	print("Testing GRU model...")
+	test_gru_model(positives, negatives, data_fraction=0.1, fp_rate=0.01)
 
 
