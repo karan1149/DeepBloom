@@ -54,8 +54,8 @@ def test_gru_model(positives, negatives):
 
     data = Data(positives, train_dev_negatives)
 
-    db = DeepBloom(GRUModel('../data/glove.6B.50d-char.txt', 50, 0.001, pca_embedding_dim=16), data, fp_rate)
-
+    db = DeepBloom(GRUModel('../data/glove.6B.50d-char.txt', 50, lr=0.001, pca_embedding_dim=16), data, fp_rate)
+    print("Bloom filter bits needed", db.bloom_filter.size)
     for positive in positives:
         assert(db.check(positive))
 
