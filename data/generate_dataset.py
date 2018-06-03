@@ -8,6 +8,8 @@ desired_positive_categories = ['porn', 'models']
 
 folders = sorted([tup for tup in os.walk(dataset_path)])
 
+nonallowed_characters = ['_', '&', '#', ';', '/', 'ü', ',', 'ö', '"', 'ı']
+
 desired_negative_categories = []
 
 for tup in folders:
@@ -36,8 +38,43 @@ def generate_dataset(dataset_path, desired_positive_categories, desired_negative
 		else:
 			negatives += urls
 
+    # Remove unallowed characters
+
 	initial_positive_length = len(positives)
 	initial_negative_length = len(negatives)
+
+	new_positives = []
+	for url in positives:
+		allowed = True
+		for char in nonallowed_characters:
+			if char in url:
+				allowed = False
+		if allowed:
+			new_positives.append(url)
+	positives = new_positives
+
+	new_negatives = []
+	for url in negatives:
+		allowed = True
+		for char in nonallowed_characters:
+			if char in url:
+				allowed = False
+		if allowed:
+			new_negatives.append(url)
+	negatives = new_negatives
+
+	print(initial_positive_length - len(positives), "invald character positives removed.")
+	print(initial_negative_length - len(negatives), "invalid character negatives removed.")
+
+
+
+	# Remove duplicates
+
+	initial_positive_length = len(positives)
+	initial_negative_length = len(negatives)
+
+	positives = [pos.lower() for pos in positives]
+	negatives = [neg.lower() for neg in negatives]
 
 	# Ensures no duplicates within lists
 	positives = set(positives)
