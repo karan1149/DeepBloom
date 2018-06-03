@@ -75,7 +75,7 @@ def test_gru_model(positives, negatives, data_fraction=1.0, fp_rate=0.01, lr=0.0
     shuffled = shuffle_for_training(negatives_train, positives)
 
     model.fit(shuffled[0], shuffled[1])
-    print("Params", model.model.count_params())
+    # print("Params", model.model.count_params())
     # model.save('model_test.h5')
     # model = load_model('model_test.h5')
 
