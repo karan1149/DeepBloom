@@ -8,37 +8,34 @@ class DeepBloom(object):
         self.model = model
         self.threshold = 0
         self.fp_rate = float(fp_rate)
-        self.data = data
-        self.fit()
-        self.createBloomFilter()
+        self.fit(data)
+        self.createBloomFilter(data)
 
     def check(self, item):
         if self.model.predict(item) > self.threshold:
             return true
         return self.bloomFilter.check(item)
 
-    def createBloomFilter(self):
+    def createBloomFilter(self, data):
         self.bloomFilter = BloomFilter(
-            len(self.data.positives),
+            len(data.positives),
             self.fp_rate / 2,
             self.string_digest
         )
-        for positive in self.data.positives:
+        for positive in data.positives:
             if self.model.predict(positive) <= self.threshold:
                 self.bloomFilter.add(positive)
 
 
-
-
     ## For now, only train the first model.
-    def fit(self):
+    def fit(self, data):
 
         ## Split negative data into subgroups.
-        (s1, s2, s3) = self.split_negatives()
+        (s1, s2, s3) = self.split_negatives(data)
 
         ## Shuffle together subset of negatives and positives.
         ## Then, train the model on this data.
-        shuffled = self.shuffle_for_training(s1, self.data.positives)
+        shuffled = self.shuffle_for_training(s1, data.positives)
         self.model.fit(list(shuffled[0]), list(shuffled[1]))
 
         ## We want a threshold such that at most s2.size * fp_rate/2 elements
@@ -49,11 +46,11 @@ class DeepBloom(object):
         self.threshold = predictions[fp_index]
 
 
-    def split_negatives(self):
-        size = len(self.data.negatives)
-        s1 = self.data.negatives[0:math.floor(.8*size)]
-        s2 = self.data.negatives[math.floor(.8*size):math.floor(.9*size)]
-        s3 = self.data.negatives[math.floor(.9*size):]
+    def split_negatives(self, data):
+        size = len(data.negatives)
+        s1 = data.negatives[0:math.floor(.8*size)]
+        s2 = data.negatives[math.floor(.8*size):math.floor(.9*size)]
+        s3 = data.negatives[math.floor(.9*size):]
         return (s1, s2, s3)
 
     def shuffle_for_training(self, negatives, positives):
