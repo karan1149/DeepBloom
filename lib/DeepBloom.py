@@ -13,7 +13,6 @@ class DeepBloom(object):
         self.create_bloom_filter(data)
 
     def check(self, item):
-        # print(self.model.predict(item))
         if self.model.predict(item) > self.threshold:
             return True
         return self.bloom_filter.check(item)
@@ -23,7 +22,7 @@ class DeepBloom(object):
         for positive in data.positives:
             if self.model.predict(positive) <= self.threshold:
                 false_negatives.append(positive)
-
+        print("Number of false negatives at bloom time", len(false_negatives))
         self.bloom_filter = BloomFilter(
             len(false_negatives),
             self.fp_rate / 2,
@@ -33,10 +32,10 @@ class DeepBloom(object):
             self.bloom_filter.add(fn)
 
 
-    ## For now, only train the first model.
     def fit(self, data):
         ## Split negative data into subgroups.
         (s1, s2) = split_negatives(data)
+        print("Training model with train, dev, positives", len(s1), len(s2), len(data.positives))
 
         ## Shuffle together subset of negatives and positives.
         ## Then, train the model on this data.
