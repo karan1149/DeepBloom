@@ -46,16 +46,16 @@ def test_almost_perfect_model():
 	model.fit(positives + negatives_train, [1 for _ in range(len(positives))] + [0 for _ in range(len(negatives_train))])
 
 	for x in positives:
-		assert(model.predict(x) == 1)
+		assert(model.predict(x) >= 0.5)
 
 	false_positives_train = 0.0
 	for x in negatives_train:
-		if model.predict(x) != 0:
+		if model.predict(x) >= 0.5:
 		 false_positives_train += 1
 
 	false_positives_test = 0.0
 	for x in negatives_test:
-		if model.predict(x) != 0:
+		if model.predict(x) >= 0.5:
 		 false_positives_test += 1
 
 	print(false_positives_train / len(negatives_train), "false positive rate for train.")

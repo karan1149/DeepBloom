@@ -19,9 +19,9 @@ class AlmostPerfectModel(Model):
 
 	def predict(self, x):
 		if x in self.table:
-			return random.random() / 2 + .5
+			return ((mmh3.hash(x) % (DISCRETE_SIZE / 2)) + DISCRETE_SIZE / 2) / float(DISCRETE_SIZE)
 		else:
 			if mmh3.hash(x) % DISCRETE_SIZE < self.fp_rate * DISCRETE_SIZE:
-				return random.random() / 2 + .5
+				return ((mmh3.hash(x) % (DISCRETE_SIZE / 2)) + DISCRETE_SIZE / 2) / float(DISCRETE_SIZE)
 			else:
-				return random.random() / 2
+				return (mmh3.hash(x) % (DISCRETE_SIZE / 2)) / float(DISCRETE_SIZE)
