@@ -57,7 +57,7 @@ class GRUModel(Model):
 		optimizer = optimizers.Adam(lr=self.lr, decay=0.0001)
 		self.model.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accuracy'])
 
-		self.model.fit(X, y, batch_size=self.batch_size, epochs=30)
+		self.model.fit(X, y, batch_size=self.batch_size, epochs=30, verbose=2)
 		self.model.save("model.h5")
 		# self.model = load_model('model.h5')
 
