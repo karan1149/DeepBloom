@@ -8,19 +8,19 @@ if __name__=='__main__':
 	positives = dataset['positives']
 	negatives = dataset['negatives']
 
+	print("Data fraction 0.3, fp_rate 0.005, pca_embedding_dim None, maxlen 20, gru size 16, batch size 2048, lr 0.001, 30 epochs")
+	test_gru_model(positives, negatives, data_fraction=0.3, fp_rate=0.005, pca_embedding_dim=None, maxlen=20, gru_size=16, batch_size=2048)
+
+	print("Data fraction 0.3, fp_rate 0.005, pca_embedding_dim None, maxlen 30, gru size 16, batch size 2048, lr 0.001, 30 epochs")
+	test_gru_model(positives, negatives, data_fraction=0.3, fp_rate=0.005, pca_embedding_dim=None, maxlen=30, gru_size=16, batch_size=2048)
+
+	print("Data fraction 0.3, fp_rate 0.005, pca_embedding_dim None, maxlen 40, gru size 16, batch size 2048, lr 0.001, 30 epochs")
+	test_gru_model(positives, negatives, data_fraction=0.3, fp_rate=0.005, pca_embedding_dim=None, maxlen=40, gru_size=16, batch_size=2048)
+
+	print("Data fraction 0.3, fp_rate 0.005, pca_embedding_dim None, maxlen 50, gru size 16, batch size 2048, lr 0.001, 30 epochs")
+	test_gru_model(positives, negatives, data_fraction=0.3, fp_rate=0.005, pca_embedding_dim=None, maxlen=50, gru_size=16, batch_size=2048)
 
 
-	print("Data fraction 0.5, fp_rate 0.01, pca_embedding_dim None, maxlen 30, gru size 16, batch size 2048, lr 0.001, 30 epochs")
-	test_gru_model(positives, negatives, data_fraction=0.5, fp_rate=0.01, pca_embedding_dim=None, maxlen=30, gru_size=16, batch_size=2048)
-
-	print("Data fraction 0.5, fp_rate 0.01, pca_embedding_dim None, maxlen 40, gru size 16, batch size 2048, lr 0.001, 30 epochs")
-	test_gru_model(positives, negatives, data_fraction=0.5, fp_rate=0.01, pca_embedding_dim=None, maxlen=40, gru_size=16, batch_size=2048)
-
-	print("Data fraction 0.5, fp_rate 0.01, pca_embedding_dim None, maxlen 50, gru size 16, batch size 2048, lr 0.001, 30 epochs")
-	test_gru_model(positives, negatives, data_fraction=0.5, fp_rate=0.01, pca_embedding_dim=None, maxlen=50, gru_size=16, batch_size=2048)
-
-	print("Data fraction 0.5, fp_rate 0.01, pca_embedding_dim None, maxlen 60, gru size 16, batch size 2048, lr 0.001, 30 epochs")
-	test_gru_model(positives, negatives, data_fraction=0.5, fp_rate=0.01, pca_embedding_dim=None, maxlen=60, gru_size=16, batch_size=2048)
 	
 	'''
 	Using threshold 0.5
