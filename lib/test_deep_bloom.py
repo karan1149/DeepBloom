@@ -3,6 +3,7 @@ from Model import Model
 from AlmostPerfectModel import AlmostPerfectModel
 from PerfectModel import PerfectModel
 from GRUModel import GRUModel
+from AlwaysNoModel import AlwaysNoModel
 import json
 import random
 import string
@@ -43,18 +44,17 @@ def test_almost_perfect_model():
     print("Test false positive rate: ", str(100* false_positives / len(test_negatives)) + "%")
 
 def test_gru_model(positives, negatives):
-    fp_rate = 0.05
+    fp_rate = 0.01
 
-    train_dev_negatives = negatives[:int(.3 * len(negatives))]
-    test_negatives = negatives[int(.3 * len(negatives)):int(.6 * len(negatives))]
-    positives = positives[:int(.3 * len(positives))]
+    train_dev_negatives = negatives[:int(.9 * len(negatives))]
+    test_negatives = negatives[int(.9 * len(negatives)):]
     print("Number train, dev", len(train_dev_negatives))
     print("Number test", len(test_negatives))
     print("Number positives ", len(positives))
 
     data = Data(positives, train_dev_negatives)
 
-    db = DeepBloom(GRUModel('../data/glove.6B.50d-char.txt', 50, lr=0.001, pca_embedding_dim=16), data, fp_rate)
+    db = DeepBloom(AlwaysNoModel(), data, fp_rate)
     print("Bloom filter bits needed", db.bloom_filter.size)
     for positive in positives:
         assert(db.check(positive))
