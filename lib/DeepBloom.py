@@ -9,22 +9,22 @@ class DeepBloom(object):
         self.threshold = 0
         self.fp_rate = float(fp_rate)
         self.fit(data)
-        self.createBloomFilter(data)
+        self.create_bloom_filter(data)
 
     def check(self, item):
         if self.model.predict(item) > self.threshold:
-            return true
-        return self.bloomFilter.check(item)
+            return True
+        return self.bloom_filter.check(item)
 
-    def createBloomFilter(self, data):
-        self.bloomFilter = BloomFilter(
+    def create_bloom_filter(self, data):
+        self.bloom_filter = BloomFilter(
             len(data.positives),
             self.fp_rate / 2,
             self.string_digest
         )
         for positive in data.positives:
             if self.model.predict(positive) <= self.threshold:
-                self.bloomFilter.add(positive)
+                self.bloom_filter.add(positive)
 
 
     ## For now, only train the first model.
@@ -44,6 +44,7 @@ class DeepBloom(object):
         predictions = [self.model.predict(item) for item in s2]
         list.sort(predictions)
         self.threshold = predictions[fp_index]
+        print(self.threshold)
 
 
     def split_negatives(self, data):
