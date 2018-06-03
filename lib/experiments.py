@@ -1,4 +1,5 @@
 from test_models import test_gru_model
+import json
 
 if __name__=='__main__':
 	with open('../data/dataset.json', 'r') as f:
