@@ -42,18 +42,21 @@ def test_almost_perfect_model():
             false_positives += 1
     print("Test false positive rate: ", str(100* false_positives / len(test_negatives)) + "%")
 
-def test_gru_model():
+def test_gru_model(positives, negatives):
     fp_rate = 0.05
 
-    train_dev_negatives = negatives[:int(.90 * len(negatives))]
-    test_negatives = negatives[int(.90 * len(negatives)):]
+    train_dev_negatives = negatives[:int(.3 * len(negatives))]
+    test_negatives = negatives[int(.3 * len(negatives)):int(.6 * len(negatives))]
+    positives = positives[:int(.3 * len(positives))]
     print("Number train, dev", len(train_dev_negatives))
     print("Number test", len(test_negatives))
+    print("Number positives ", len(positives))
+
     data = Data(positives, train_dev_negatives)
 
     db = DeepBloom(GRUModel('../data/glove.6B.50d-char.txt', 50, 0.001), data, fp_rate)
 
-    for positive in data.positives:
+    for positive in positives:
         assert(db.check(positive))
 
     false_positives = 0.0
@@ -70,4 +73,4 @@ def test_gru_model():
 
 
 # test_almost_perfect_model()
-test_gru_model()
+test_gru_model(positives, negatives)
