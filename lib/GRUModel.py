@@ -8,7 +8,7 @@ from sklearn.decomposition import PCA
 import numpy as np
 
 class GRUModel(Model):
-	def __init__(self, embeddings_path, embedding_dim, lr, maxlen=50, pca_embedding_dim=None, batch_size=1024, gru_size=16):
+	def __init__(self, embeddings_path, embedding_dim, lr, maxlen=50, pca_embedding_dim=None, batch_size=1024, gru_size=16, hidden_size=None):
 		self.embeddings_path = embeddings_path
 		self.embedding_dim = embedding_dim
 		self.lr = lr
@@ -17,6 +17,7 @@ class GRUModel(Model):
 		self.model = None
 		self.batch_size = batch_size
 		self.gru_size = gru_size
+		self.hidden_size = hidden_size
 
 	def fit(self, text_X, text_y):
 
@@ -45,15 +46,24 @@ class GRUModel(Model):
 		    embedding_matrix_pca = np.array(pca.transform(embedding_matrix[1:]))
 		    embedding_matrix_pca = np.insert(embedding_matrix_pca, 0, 0, axis=0)
 		    print("PCA matrix created")
-		    
-	
-		self.model = Sequential([
+		
+		prelayers = [
 		    Embedding(num_chars + 1, self.embedding_dim if not self.pca_embedding_dim else self.pca_embedding_dim, input_length=self.maxlen,
     weights=[embedding_matrix] if not self.pca_embedding_dim else [embedding_matrix_pca]),
-		    GRU(self.gru_size),
-		    Dense(1),
-		    Activation('sigmoid'),
-		])
+		    GRU(self.gru_size)
+		]
+
+		if hidden_size:
+			prelayers.append(Dense(hidden_size))
+
+		postlayers = [
+			Dense(1),
+			Activation('sigmoid'),
+		]
+
+		layers = prelayers + postlayers
+	
+		self.model = Sequential(layers)
 		optimizer = optimizers.Adam(lr=self.lr, decay=0.0001)
 		self.model.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accuracy'])
 

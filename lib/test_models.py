@@ -60,7 +60,7 @@ def test_almost_perfect_model(positives, negatives):
     print(false_positives_test / len(negatives_test), "false positive rate for test.") 
 
 
-def test_gru_model(positives, negatives, data_fraction=1.0, fp_rate=0.01, lr=0.001, pca_embedding_dim=None, maxlen=50, gru_size=16, batch_size=1024):
+def test_gru_model(positives, negatives, data_fraction=1.0, fp_rate=0.01, lr=0.001, pca_embedding_dim=None, maxlen=50, gru_size=16, batch_size=1024, hidden_size=None):
     positives = positives[:int(data_fraction * len(positives))]
     negatives = negatives[:int(data_fraction * len(negatives))]
 
@@ -71,11 +71,11 @@ def test_gru_model(positives, negatives, data_fraction=1.0, fp_rate=0.01, lr=0.0
     print("Split sizes:")
     print(len(positives), len(negatives_train), len(negatives_dev), len(negatives_test))
 
-    model = GRUModel('../data/glove.6B.50d-char.txt', 50, lr, pca_embedding_dim=pca_embedding_dim, maxlen=maxlen, gru_size=gru_size, batch_size=batch_size)
+    model = GRUModel('../data/glove.6B.50d-char.txt', 50, lr, pca_embedding_dim=pca_embedding_dim, maxlen=maxlen, gru_size=gru_size, batch_size=batch_size, hidden_size=hidden_size)
     shuffled = shuffle_for_training(negatives_train, positives)
 
     model.fit(shuffled[0], shuffled[1])
-    print(model.model.summary())
+    print("Params", model.model.count_params())
     # model.save('model_test.h5')
     # model = load_model('model_test.h5')
 

@@ -10,16 +10,16 @@ if __name__=='__main__':
 
 
 
-	print("Data fraction 0.5, fp_rate 0.005, pca_embedding_dim None, maxlen 30, gru size 16, batch size 2048")
+	print("Data fraction 0.5, fp_rate 0.01, pca_embedding_dim None, maxlen 30, gru size 16, batch size 2048, lr 0.001, 30 epochs")
 	test_gru_model(positives, negatives, data_fraction=0.5, fp_rate=0.01, pca_embedding_dim=None, maxlen=30, gru_size=16, batch_size=2048)
 
-	print("Data fraction 0.5, fp_rate 0.005, pca_embedding_dim None, maxlen 40, gru size 16, batch size 2048")
+	print("Data fraction 0.5, fp_rate 0.01, pca_embedding_dim None, maxlen 40, gru size 16, batch size 2048, lr 0.001, 30 epochs")
 	test_gru_model(positives, negatives, data_fraction=0.5, fp_rate=0.01, pca_embedding_dim=None, maxlen=40, gru_size=16, batch_size=2048)
 
-	print("Data fraction 0.5, fp_rate 0.005, pca_embedding_dim None, maxlen 50, gru size 16, batch size 2048")
+	print("Data fraction 0.5, fp_rate 0.01, pca_embedding_dim None, maxlen 50, gru size 16, batch size 2048, lr 0.001, 30 epochs")
 	test_gru_model(positives, negatives, data_fraction=0.5, fp_rate=0.01, pca_embedding_dim=None, maxlen=50, gru_size=16, batch_size=2048)
 
-	print("Data fraction 0.5, fp_rate 0.005, pca_embedding_dim None, maxlen 60, gru size 16, batch size 2048")
+	print("Data fraction 0.5, fp_rate 0.01, pca_embedding_dim None, maxlen 60, gru size 16, batch size 2048, lr 0.001, 30 epochs")
 	test_gru_model(positives, negatives, data_fraction=0.5, fp_rate=0.01, pca_embedding_dim=None, maxlen=60, gru_size=16, batch_size=2048)
 	
 	'''
@@ -35,7 +35,7 @@ if __name__=='__main__':
 	0.009968677652185755 false positive rate for dev.
 	0.009832493531254255 false positive rate for test.
 	'''
-	# print("Data fraction 0.5, fp_rate 0.01, pca_embedding_dim 16, maxlen 50, gru size 16, batch size 2048")
+	# print("Data fraction 0.5, fp_rate 0.01, pca_embedding_dim 16, maxlen 50, gru size 16, batch size 2048, lr 0.001, 30 epochs")
 	# test_gru_model(positives, negatives, data_fraction=0.5, fp_rate=0.01, pca_embedding_dim=16, maxlen=50, gru_size=16, batch_size=2048)
 
 	
@@ -53,5 +53,5 @@ if __name__=='__main__':
 	0.009968677652185755 false positive rate for dev.
 	0.009560125289391257 false positive rate for test.
 	'''
-	# print("Data fraction 0.5, fp_rate 0.01, pca_embedding_dim None, maxlen 50, gru size 16, batch size 2048")
+	# print("Data fraction 0.5, fp_rate 0.01, pca_embedding_dim None, maxlen 50, gru size 16, batch size 2048, lr 0.001, 30 epochs")
 	# test_gru_model(positives, negatives, data_fraction=0.5, fp_rate=0.01, pca_embedding_dim=None, maxlen=50, gru_size=16, batch_size=2048)
