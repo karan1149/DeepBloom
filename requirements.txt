@@ -1,0 +1,5 @@
+bitarray
+keras
+scikit-learn
+tensorflow
+mmh3
