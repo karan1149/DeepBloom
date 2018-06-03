@@ -8,8 +8,8 @@ if __name__=='__main__':
 	positives = dataset['positives']
 	negatives = dataset['negatives']
 
-	print("Data fraction 0.5, fp_rate 0.01, pca_embedding_dim 16, maxlen 50, gru size 16")
-	test_gru_model(positives, negatives, data_fraction=0.5, fp_rate=0.01, pca_embedding_dim=16, maxlen=50, gru_size=16)
+	print("Data fraction 0.5, fp_rate 0.01, pca_embedding_dim 16, maxlen 50, gru size 16, batch size 2048")
+	test_gru_model(positives, negatives, data_fraction=0.5, fp_rate=0.01, pca_embedding_dim=16, maxlen=50, gru_size=16, batch_size=2048)
 
-	print("Data fraction 0.5, fp_rate 0.01, pca_embedding_dim None, maxlen 50, gru size 16")
-	test_gru_model(positives, negatives, data_fraction=0.5, fp_rate=0.01, pca_embedding_dim=None, maxlen=50, gru_size=16)
+	print("Data fraction 0.5, fp_rate 0.01, pca_embedding_dim None, maxlen 50, gru size 16, batch size 2048")
+	test_gru_model(positives, negatives, data_fraction=0.5, fp_rate=0.01, pca_embedding_dim=None, maxlen=50, gru_size=16, batch_size=2048)
