@@ -85,6 +85,10 @@ class DeeperBloom(object):
                         new_s2.append(s2[j])
                 s2 = new_s2
 
+                # Ensure that s1 is balanced relative to curr_positives
+                if (len(s1) > len(curr_positives)):
+                    s1 = s1[:len(curr_positives)]
+
             print("Training model with train, dev, positives", i, len(s1), len(s2), len(curr_positives))
 
             ## Shuffle together subset of negatives and positives.
