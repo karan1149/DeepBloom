@@ -8,13 +8,51 @@ if __name__=='__main__':
 	positives = dataset['positives']
 	negatives = dataset['negatives']
 
-
+	'''
+	FINAL MODEL!!!
+	0.16041046723313057 false negatives for positives set.
+	0.10043011484860866 false positive rate for train.
+	0.10318216895909937 false positive rate for dev.
+	0.10831177084751918 false positive rate for test.
+	Getting threshold for fp_rate 0.005
+	Using threshold 0.9763524
+	0.5104030976253929 false negatives for positives set.
+	0.0045110990058559175 false positive rate for train.
+	0.004948023060511144 false positive rate for dev.
+	0.0054473648372599754 false positive rate for test.
+	'''
 	print("Data fraction 0.3, fp_rate 0.005, pca_embedding_dim 16, maxlen 40, gru size 16, batch size 1024, lr 0.005, 40 epochs, hidden size 8")
 	test_gru_model(positives, negatives, data_fraction=0.3, fp_rate=0.005, pca_embedding_dim=16, maxlen=40, gru_size=16, batch_size=1024, lr=0.005, hidden_size=8, epochs=40)
 
+	'''
+	Using threshold 0.5
+	0.13511080304822912 false negatives for positives set.
+	0.14722638340369512 false positive rate for train.
+	0.15543147668981797 false positive rate for dev.
+	0.15561305551772664 false positive rate for test.
+	Getting threshold for fp_rate 0.005
+	Using threshold 0.98324597
+	0.5477490827826046 false negatives for positives set.
+	0.003807481047709837 false positive rate for train.
+	0.004948023060511144 false positive rate for dev.
+	0.00449407599073948 false positive rate for test.
+	'''
 	print("Data fraction 0.3, fp_rate 0.005, pca_embedding_dim 16, maxlen 40, gru size 16, batch size 1024, lr 0.005, 40 epochs, hidden size None")
 	test_gru_model(positives, negatives, data_fraction=0.3, fp_rate=0.005, pca_embedding_dim=16, maxlen=40, gru_size=16, batch_size=1024, lr=0.005, hidden_size=None, epochs=40)
 
+	'''
+	Using threshold 0.5
+	0.14208205361090862 false negatives for positives set.
+	0.12967565481864815 false positive rate for train.
+	0.13786372508965455 false positive rate for dev.
+	0.1340051749965954 false positive rate for test.
+	Getting threshold for fp_rate 0.005
+	Using threshold 0.98000735
+	0.5106739805043998 false negatives for positives set.
+	0.004647283126787417 false positive rate for train.
+	0.004948023060511144 false positive rate for dev.
+	0.005174996595396977 false positive rate for test.
+	'''
 	print("Data fraction 0.3, fp_rate 0.005, pca_embedding_dim 16, maxlen 40, gru size 16, batch size 1024, lr 0.005, 40 epochs, hidden size 8, decay is 0")
 	test_gru_model(positives, negatives, data_fraction=0.3, fp_rate=0.005, pca_embedding_dim=16, maxlen=40, gru_size=16, batch_size=1024, lr=0.005, hidden_size=8, decay=0.0, epochs=40)
 
