@@ -86,8 +86,8 @@ class DeeperBloom(object):
                 s2 = new_s2
 
                 # Ensure that s1 is balanced relative to curr_positives
-                if (len(s1) > len(curr_positives)):
-                    s1 = s1[:len(curr_positives)]
+                # if (len(s1) > len(curr_positives)):
+                #     s1 = s1[:len(curr_positives)]
 
             print("Training model with train, dev, positives", i, len(s1), len(s2), len(curr_positives))
 
@@ -103,4 +103,5 @@ class DeeperBloom(object):
             predictions = self.models[i].predicts(s2)
             predictions.sort()
             self.thresholds[i] = predictions[fp_index]
+            print("Threshold for model", i, self.thresholds[i])
 
