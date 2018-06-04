@@ -52,6 +52,7 @@ class DeeperBloom(object):
             if i == 0:
                 (s1, s2) = split_negatives(data)
                 curr_positives = data.positives
+                false_negatives = curr_positives
             else:
                 # TODO BALANCE
                 DIFFICULTY_FACTOR = 2
