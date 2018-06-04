@@ -54,16 +54,19 @@ class DeeperBloom(object):
                 curr_positives = data.positives
             else:
                 # TODO BALANCE
-
+                DIFFICULTY_FACTOR = 2
                 # Get false negatives from curr_positives, with
                 # respect to prev model
                 false_negatives = []
+                new_positives = []
                 preds = self.models[i - 1].predicts(curr_positives)
                 for j in range(len(curr_positives)):
                     pred = preds[j]
                     if pred <= self.thresholds[i - 1]:
                         false_negatives.append(curr_positives[j])
-                curr_positives = false_negatives
+                        if pred <= self.thresholds[i - 1] / DIFFICULTY_FACTOR:
+                            new_positives.append(curr_positives[j])
+                curr_positives = new_positives
 
                 # Get true negatives from s1, with respect to prev
                 # model
@@ -71,7 +74,7 @@ class DeeperBloom(object):
                 preds = self.models[i - 1].predicts(s1)
                 for j in range(len(s1)):
                     pred = preds[j]
-                    if pred <= self.thresholds[i - 1]:
+                    if pred <= self.thresholds[i - 1] and pred > self.thresholds[i - 1] / DIFFICULTY_FACTOR:
                         new_s1.append(s1[j])
                 s1 = new_s1
 
@@ -81,14 +84,14 @@ class DeeperBloom(object):
                 preds = self.models[i - 1].predicts(s2)
                 for j in range(len(s2)):
                     pred = preds[j]
-                    if pred <= self.thresholds[i - 1]:
+                    if pred <= self.thresholds[i - 1] and pred > self.thresholds[i - 1] / DIFFICULTY_FACTOR:
                         new_s2.append(s2[j])
                 s2 = new_s2
 
                 # Ensure that s1 is balanced relative to curr_positives
                 # if (len(s1) > len(curr_positives)):
                 #     s1 = s1[:len(curr_positives)]
-
+            print("Number of false negatives at this step", len(false_negatives))
             print("Training model with train, dev, positives", i, len(s1), len(s2), len(curr_positives))
 
             ## Shuffle together subset of negatives and positives.
