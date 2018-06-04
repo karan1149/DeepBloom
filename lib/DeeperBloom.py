@@ -76,7 +76,7 @@ class DeeperBloom(object):
                 preds = self.models[i - 1].predicts(s1)
                 for j in range(len(s1)):
                     pred = preds[j]
-                    if pred <= self.thresholds[i - 1] and pred > self.thresholds[i - 1] / 2.5:
+                    if pred <= self.thresholds[i - 1] and pred > self.thresholds[i - 1] / 4:
                         new_s1.append(s1[j])
                 s1 = new_s1
 
