@@ -8,7 +8,7 @@ from sklearn.decomposition import PCA
 import numpy as np
 
 class GRUModel(Model):
-	def __init__(self, embeddings_path, embedding_dim, lr=0.001, maxlen=50, pca_embedding_dim=None, batch_size=1024, gru_size=16, hidden_size=None, second_gru_size=None, decay=0.0001, epochs=30):
+	def __init__(self, embeddings_path, embedding_dim, lr=0.001, maxlen=50, pca_embedding_dim=None, batch_size=1024, gru_size=16, hidden_size=None, second_gru_size=None, decay=0.0001, epochs=30, lstm=False):
 		self.embeddings_path = embeddings_path
 		self.embedding_dim = embedding_dim
 		self.lr = lr
@@ -21,6 +21,7 @@ class GRUModel(Model):
 		self.second_gru_size = second_gru_size
 		self.decay = decay
 		self.epochs = epochs
+		self.lstm = lstm
 
 	def fit(self, text_X, text_y):
 
@@ -50,10 +51,16 @@ class GRUModel(Model):
 		    embedding_matrix_pca = np.insert(embedding_matrix_pca, 0, 0, axis=0)
 		    print("PCA matrix created")
 		
+		if not self.lstm:
+			rnn_layer = GRU(self.gru_size, return_sequences=False if not self.second_gru_size else True)
+		else:
+			rnn_layer = LSTM(self.gru_size, return_sequences=False if not self.second_gru_size else True)
+
+
 		prelayers = [
 		    Embedding(num_chars + 1, self.embedding_dim if not self.pca_embedding_dim else self.pca_embedding_dim, input_length=self.maxlen,
     weights=[embedding_matrix] if not self.pca_embedding_dim else [embedding_matrix_pca]),
-		    GRU(self.gru_size, return_sequences=False if not self.second_gru_size else True)
+		    rnn_layer
 		]
 
 		if self.second_gru_size:

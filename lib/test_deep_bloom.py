@@ -57,7 +57,11 @@ def test_gru_model(positives, negatives, model, train_dev_fraction=0.9, deeper_b
         print("Params needed", db.model.model.count_params())
     else:
         db = DeeperBloom(model, data, fp_rate)
-        print("Params needed for first model", db.models[0].model.count_params())
+        total = 0.0
+        for i in range(db.k):
+            print("Params needed for model", i, db.models[i].model.count_params())
+            total += db.models[i].model.count_params()
+        print("Total params", total)
     print("Bloom filter bits needed", db.bloom_filter.size)
     # for positive in positives:
     #     assert(db.check(positive))
