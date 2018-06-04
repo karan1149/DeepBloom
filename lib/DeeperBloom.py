@@ -55,7 +55,8 @@ class DeeperBloom(object):
                 false_negatives = curr_positives
             else:
                 # TODO BALANCE
-                DIFFICULTY_FACTOR = 2
+                # TODO FIX curr_positives not carrying through all false negatives
+                DIFFICULTY_FACTOR = 1.3
                 # Get false negatives from curr_positives, with
                 # respect to prev model
                 false_negatives = []
