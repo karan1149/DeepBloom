@@ -20,14 +20,19 @@ class DeeperBloom(object):
         return self.bloom_filter.check(item)
 
     def create_bloom_filter(self, data):
+        print("Creating bloom filter")
         false_negatives = []
-        for positive in data.positives:
+        preds = []
+        for i in range(self.k):
+            preds.append(self.models[i].predicts(data.positives))
+        for j in range(len(data.positives)):
             is_false = True
             for i in range(self.k):
-                if self.models[i].predict(positive) > self.thresholds[i]:
+                pred = preds[i][j]
+                if pred > self.thresholds[i]:
                     is_false = False
             if is_false:      
-                false_negatives.append(positive)
+                false_negatives.append(data.positives[j])
         print("Number of false negatives at bloom time", len(false_negatives))
         self.bloom_filter = BloomFilter(
             len(false_negatives),
@@ -36,41 +41,48 @@ class DeeperBloom(object):
         )
         for fn in false_negatives:
             self.bloom_filter.add(fn)
+        print("Created bloom filter")
 
     def fit(self, data):
         ## Split negative data into subgroups.
 
         for i in range(self.k):
             # First prep s1, s2 and curr_positives
+            print("Data prep", i)
             if i == 0:
                 (s1, s2) = split_negatives(data)
                 curr_positives = data.positives
             else:
+                # TODO BALANCE
+
                 # Get false negatives from curr_positives, with
                 # respect to prev model
                 false_negatives = []
-                for pos in curr_positives:
-                    pred = self.models[i - 1].predict(pos)
+                preds = self.models[i - 1].predicts(curr_positives)
+                for j in range(len(curr_positives)):
+                    pred = preds[j]
                     if pred <= self.thresholds[i - 1]:
-                        false_negatives.append(pos)
+                        false_negatives.append(curr_positives[j])
                 curr_positives = false_negatives
 
                 # Get true negatives from s1, with respect to prev
                 # model
                 new_s1 = []
-                for neg in s1:
-                    pred = self.models[i - 1].predict(neg)
+                preds = self.models[i - 1].predicts(s1)
+                for j in range(len(s1)):
+                    pred = preds[j]
                     if pred <= self.thresholds[i - 1]:
-                        new_s1.append(neg)
+                        new_s1.append(s1[j])
                 s1 = new_s1
 
                 # Get true negatives from s2, with respect to prev
                 # model
                 new_s2 = []
-                for neg in s2:
-                    pred = self.models[i - 1].predict(neg)
+                preds = self.models[i - 1].predicts(s2)
+                for j in range(len(s2)):
+                    pred = preds[j]
                     if pred <= self.thresholds[i - 1]:
-                        new_s2.append(neg)
+                        new_s2.append(s2[j])
                 s2 = new_s2
 
             print("Training model with train, dev, positives", i, len(s1), len(s2), len(curr_positives))
@@ -79,15 +91,12 @@ class DeeperBloom(object):
             ## Then, train the model on this data.
             shuffled = shuffle_for_training(s1, curr_positives)
             self.models[i].fit(shuffled[0], shuffled[1])
-
-            print("s1 results", test_model(self.models[i], s1, [0 for _ in range(len(s1))]))
-            print("s2 results", test_model(self.models[i], s2, [0 for _ in range(len(s2))]))
-            print("pos results", test_model(self.models[i], curr_positives, [1 for _ in range(len(curr_positives))]))
+            print("Done fitting")
 
             ## We want a threshold such that at most s2.size * fp_rate/2 elements
             ## are greater than threshold.
             fp_index = math.ceil((len(s2) * (1 - self.fp_rate/(self.k + 1))))
-            predictions = [self.models[i].predict(item) for item in s2]
+            predictions = self.models[i].predicts(s2)
             predictions.sort()
             self.thresholds[i] = predictions[fp_index]
 

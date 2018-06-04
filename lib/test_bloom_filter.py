@@ -48,12 +48,7 @@ def string_test():
     print("False Positive Rate: " + str(fp / count))
 
 
-def url_test(fp_rate):
-    with open('../data/dataset.json', 'r') as f:
-        dataset = json.load(f)
-
-    positives = dataset['positives']
-    negatives = dataset['negatives']
+def url_test(positives, negatives, fp_rate):
     bf = BloomFilter(len(positives), fp_rate, string_digest)
     for pos in positives:
         bf.add(pos)
@@ -67,4 +62,11 @@ def url_test(fp_rate):
             fp += 1
     print("False positives", fp / len(negatives))
     
-url_test(0.001)
+if __name__=='__main__':
+    with open('../data/dataset.json', 'r') as f:
+        dataset = json.load(f)
+
+    positives = dataset['positives']
+    negatives = dataset['negatives']
+    print(len(positives), len(negatives))
+    url_test(positives, negatives, 0.001)

@@ -57,22 +57,22 @@ def test_gru_model(positives, negatives, model, train_dev_fraction=0.9, deeper_b
         print("Params needed", db.model.model.count_params())
     else:
         db = DeeperBloom(model, data, fp_rate)
-        print("Params needed for first model", db.models[i].model.count_params())
+        print("Params needed for first model", db.models[0].model.count_params())
     print("Bloom filter bits needed", db.bloom_filter.size)
-    for positive in positives:
-        assert(db.check(positive))
+    # for positive in positives:
+    #     assert(db.check(positive))
 
-    false_positives = 0.0
-    for negative in data.negatives:
-        if db.check(negative):
-            false_positives += 1
-    print("Train/dev false Positive Rate: " + str(100* false_positives / len(train_dev_negatives)) + "%")
+    # false_positives = 0.0
+    # for negative in data.negatives:
+    #     if db.check(negative):
+    #         false_positives += 1
+    # print("Train/dev false Positive Rate: " + str(false_positives / len(train_dev_negatives)))
 
     false_positives = 0.0
     for neg in test_negatives:
         if db.check(neg):
             false_positives += 1
-    print("Test false positive rate: ", str(100* false_positives / len(test_negatives)) + "%")
+    print("Test false positive rate: ", str(false_positives / len(test_negatives)))
 
 
 def test_deeper_bloom(positives, negatives):
@@ -86,24 +86,24 @@ def test_deeper_bloom(positives, negatives):
 
     data = Data(positives, train_dev_negatives)
 
-    db = DeeperBloom([AlwaysNoModel()], data, fp_rate)
+    db = DeeperBloom([AlmostPerfectModel(.2), AlmostPerfectModel(.2)], data, fp_rate)
     print("Bloom filter bits needed", db.bloom_filter.size)
-    for positive in positives:
-        assert(db.check(positive))
+    # for positive in positives:
+    #     assert(db.check(positive))
 
     false_positives = 0.0
     for negative in data.negatives:
         if db.check(negative):
             false_positives += 1
-    print("Train/dev false Positive Rate: " + str(100* false_positives / len(train_dev_negatives)) + "%")
+    print("Train/dev false Positive Rate: " + str(false_positives / len(train_dev_negatives)))
 
     false_positives = 0.0
     for neg in test_negatives:
         if db.check(neg):
             false_positives += 1
-    print("Test false positive rate: ", str(100* false_positives / len(test_negatives)) + "%")
+    print("Test false positive rate: ", str(false_positives / len(test_negatives)))
 
-
-# test_almost_perfect_model()
-# test_gru_model(positives, negatives)
-test_deeper_bloom(positives, negatives)
+if __name__=='__main__':
+    # test_almost_perfect_model()
+    # test_gru_model(positives, negatives)
+    test_deeper_bloom(positives, negatives)

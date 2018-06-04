@@ -18,10 +18,12 @@ class DeepBloom(object):
         return self.bloom_filter.check(item)
 
     def create_bloom_filter(self, data):
+        print("Creating bloom filter")
         false_negatives = []
-        for positive in data.positives:
-            if self.model.predict(positive) <= self.threshold:
-                false_negatives.append(positive)
+        preds = self.model.predicts(data.positives)
+        for i in range(len(data.positives)):
+            if preds[i] <= self.threshold:
+                false_negatives.append(data.positives[i])
         print("Number of false negatives at bloom time", len(false_negatives))
         self.bloom_filter = BloomFilter(
             len(false_negatives),
@@ -30,6 +32,7 @@ class DeepBloom(object):
         )
         for fn in false_negatives:
             self.bloom_filter.add(fn)
+        print("Created bloom filter")
 
 
     def fit(self, data):
@@ -41,15 +44,12 @@ class DeepBloom(object):
         ## Then, train the model on this data.
         shuffled = shuffle_for_training(s1, data.positives)
         self.model.fit(shuffled[0], shuffled[1])
-
-        print("s1 results", test_model(self.model, s1, [0 for _ in range(len(s1))]))
-        print("s2 results", test_model(self.model, s2, [0 for _ in range(len(s2))]))
-        print("pos results", test_model(self.model, data.positives, [1 for _ in range(len(data.positives))]))
+        print("Done fitting")
 
         ## We want a threshold such that at most s2.size * fp_rate/2 elements
         ## are greater than threshold.
         fp_index = math.ceil((len(s2) * (1 - self.fp_rate/2)))
-        predictions = [self.model.predict(item) for item in s2]
+        predictions = self.model.predicts(s2)
         predictions.sort()
         self.threshold = predictions[fp_index]
 
