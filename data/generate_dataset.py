@@ -2,9 +2,14 @@ import json
 import os
 import random
 random.seed(42)
+import argparse
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--augment", action="store_true", default=False, help="Whether to augment dataset by adding www. and removing www. when possible.")
+args = parser.parse_args()
 
 dataset_path = 'shallalist/'
-desired_positive_categories = ['porn', 'models']
+desired_positive_categories = ['porn', 'models', 'sex/education', 'sex/lingerie']
 
 folders = sorted([tup for tup in os.walk(dataset_path)])
 
@@ -17,6 +22,8 @@ for tup in folders:
 		desired_negative_categories.append(tup[0][len(dataset_path):])
 
 desired_negative_categories = list(set(desired_negative_categories) - set(desired_positive_categories))
+
+print(desired_positive_categories, desired_negative_categories)
 
 # Generates a JSON dataset for positives and negatives from the Shallist set of blacklists
 def generate_dataset(dataset_path, desired_positive_categories, desired_negative_categories, save_path="dataset.json"):
