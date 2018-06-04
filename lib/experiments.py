@@ -20,6 +20,23 @@ if __name__=='__main__':
 	0.0045110990058559175 false positive rate for train.
 	0.004948023060511144 false positive rate for dev.
 	0.0054473648372599754 false positive rate for test.
+	_________________________________________________________________
+	Layer (type)                 Output Shape              Param #
+	=================================================================
+	embedding_1 (Embedding)      (None, 40, 16)            624
+	_________________________________________________________________
+	gru_1 (GRU)                  (None, 16)                1584
+	_________________________________________________________________
+	dense_1 (Dense)              (None, 8)                 136
+	_________________________________________________________________
+	dense_2 (Dense)              (None, 1)                 9
+	_________________________________________________________________
+	activation_1 (Activation)    (None, 1)                 0
+	=================================================================
+	Total params: 2,353
+	Trainable params: 2,353
+	Non-trainable params: 0
+	_________________________________________________________________
 	'''
 	print("Data fraction 0.3, fp_rate 0.005, pca_embedding_dim 16, maxlen 40, gru size 16, batch size 1024, lr 0.005, 40 epochs, hidden size 8")
 	test_gru_model(positives, negatives, data_fraction=0.3, fp_rate=0.005, pca_embedding_dim=16, maxlen=40, gru_size=16, batch_size=1024, lr=0.005, hidden_size=8, epochs=40)
