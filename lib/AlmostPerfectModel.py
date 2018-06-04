@@ -29,3 +29,6 @@ class AlmostPerfectModel(Model):
 				return ((mmh3.hash(x, self.seed) % (DISCRETE_SIZE / 2)) + DISCRETE_SIZE / 2) / float(DISCRETE_SIZE)
 			else:
 				return (mmh3.hash(x, self.seed) % (DISCRETE_SIZE / 2)) / float(DISCRETE_SIZE)
+
+	def predicts(self, X):
+		return [self.predict(x) for x in X]
