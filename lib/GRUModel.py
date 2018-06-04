@@ -8,7 +8,7 @@ from sklearn.decomposition import PCA
 import numpy as np
 
 class GRUModel(Model):
-	def __init__(self, embeddings_path, embedding_dim, lr=0.001, maxlen=50, pca_embedding_dim=None, batch_size=1024, gru_size=16, hidden_size=None, second_gru_size=None, decay=0.0001):
+	def __init__(self, embeddings_path, embedding_dim, lr=0.001, maxlen=50, pca_embedding_dim=None, batch_size=1024, gru_size=16, hidden_size=None, second_gru_size=None, decay=0.0001, epochs=30):
 		self.embeddings_path = embeddings_path
 		self.embedding_dim = embedding_dim
 		self.lr = lr
@@ -20,6 +20,7 @@ class GRUModel(Model):
 		self.hidden_size = hidden_size
 		self.second_gru_size = second_gru_size
 		self.decay = decay
+		self.epochs = epochs
 
 	def fit(self, text_X, text_y):
 
@@ -72,7 +73,7 @@ class GRUModel(Model):
 		optimizer = optimizers.Adam(lr=self.lr, decay=self.decay)
 		self.model.compile(optimizer=optimizer, loss='binary_crossentropy', metrics=['accuracy'])
 
-		self.model.fit(X, y, batch_size=self.batch_size, epochs=30, verbose=2)
+		self.model.fit(X, y, batch_size=self.batch_size, epochs=self.epochs, verbose=2)
 		# self.model.save("model.h5")
 		# self.model = load_model('model.h5')
 

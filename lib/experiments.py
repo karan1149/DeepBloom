@@ -10,13 +10,13 @@ if __name__=='__main__':
 
 
 	print("Data fraction 0.3, fp_rate 0.005, pca_embedding_dim 16, maxlen 40, gru size 16, batch size 1024, lr 0.005, 40 epochs, hidden size 8")
-	test_gru_model(positives, negatives, data_fraction=0.3, fp_rate=0.005, pca_embedding_dim=16, maxlen=40, gru_size=16, batch_size=1024, lr=0.005, hidden_size=8)
+	test_gru_model(positives, negatives, data_fraction=0.3, fp_rate=0.005, pca_embedding_dim=16, maxlen=40, gru_size=16, batch_size=1024, lr=0.005, hidden_size=8, epochs=40)
 
 	print("Data fraction 0.3, fp_rate 0.005, pca_embedding_dim 16, maxlen 40, gru size 16, batch size 1024, lr 0.005, 40 epochs, hidden size None")
-	test_gru_model(positives, negatives, data_fraction=0.3, fp_rate=0.005, pca_embedding_dim=16, maxlen=40, gru_size=16, batch_size=1024, lr=0.005, hidden_size=None)
+	test_gru_model(positives, negatives, data_fraction=0.3, fp_rate=0.005, pca_embedding_dim=16, maxlen=40, gru_size=16, batch_size=1024, lr=0.005, hidden_size=None, epochs=40)
 
 	print("Data fraction 0.3, fp_rate 0.005, pca_embedding_dim 16, maxlen 40, gru size 16, batch size 1024, lr 0.005, 40 epochs, hidden size 8, decay is 0")
-	test_gru_model(positives, negatives, data_fraction=0.3, fp_rate=0.005, pca_embedding_dim=16, maxlen=40, gru_size=16, batch_size=1024, lr=0.005, hidden_size=8, decay=0.0)
+	test_gru_model(positives, negatives, data_fraction=0.3, fp_rate=0.005, pca_embedding_dim=16, maxlen=40, gru_size=16, batch_size=1024, lr=0.005, hidden_size=8, decay=0.0, epochs=40)
 
 	'''
 	Using threshold 0.5
