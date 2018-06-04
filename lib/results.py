@@ -26,8 +26,8 @@ if __name__=='__main__':
 	'''
 	
 
-	# positives = positives[:int(len(positives) * .05)]
-	# negatives = negatives[:int(len(negatives) * .05)]
+	# positives = positives[:int(len(positives) * .03)]
+	# negatives = negatives[:int(len(negatives) * .03)]
 	print(len(positives), len(negatives))
 	print("Baseline")
 	url_test(positives, negatives, 0.01)
@@ -36,6 +36,9 @@ if __name__=='__main__':
 	test_gru_model(positives, negatives, model, train_dev_fraction=0.95, deeper_bloom=False, fp_rate=0.01)
 
 	print("deeper bloom version with k = 2")
-	models = [GRUModel('../data/glove.6B.50d-char.txt', 50, pca_embedding_dim=16, maxlen=40, gru_size=16, batch_size=8192, lr=0.005, hidden_size=8, epochs=40) for _ in range(2)]
+	models = [
+		GRUModel('../data/glove.6B.50d-char.txt', 50, pca_embedding_dim=16, maxlen=40, gru_size=16, batch_size=8192, lr=0.005, hidden_size=8, epochs=40), 
+		GRUModel('../data/glove.6B.50d-char.txt', 50, pca_embedding_dim=16, maxlen=40, gru_size=16, batch_size=8192, lr=0.005, hidden_size=8, epochs=40, lstm=True)
+		]
 	test_gru_model(positives, negatives, models, train_dev_fraction=0.95, deeper_bloom=True, fp_rate=0.01)
 
