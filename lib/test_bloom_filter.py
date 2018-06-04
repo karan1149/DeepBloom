@@ -2,6 +2,7 @@ from BloomFilter import BloomFilter
 import mmh3
 import string
 import random
+import json
 
 def get_digest(item, index):
     return mmh3.hash(bytes(item), index)
@@ -47,4 +48,23 @@ def string_test():
     print("False Positive Rate: " + str(fp / count))
 
 
-string_test()
+def url_test(fp_rate):
+    with open('../data/dataset.json', 'r') as f:
+        dataset = json.load(f)
+
+    positives = dataset['positives']
+    negatives = dataset['negatives']
+    bf = BloomFilter(len(positives), fp_rate, string_digest)
+    for pos in positives:
+        bf.add(pos)
+        assert(bf.check(pos))
+    print("Bits needed", bf.size)
+    print("Hash functions needed", bf.hash_count)
+
+    fp = 0.0
+    for neg in negatives:
+        if bf.check(neg):
+            fp += 1
+    print("False positives", fp / len(negatives))
+    
+url_test(0.001)
