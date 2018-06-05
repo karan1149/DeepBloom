@@ -3,6 +3,7 @@ import os
 import random
 random.seed(42)
 import argparse
+import string
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--augment", action="store_true", default=False, help="Whether to augment dataset by adding www. and removing www. when possible.")
@@ -45,7 +46,7 @@ def generate_dataset(dataset_path, desired_positive_categories, desired_negative
 		else:
 			negatives += urls
 
-    # Remove unallowed characters
+	# Remove unallowed characters
 
 	initial_positive_length = len(positives)
 	initial_negative_length = len(negatives)
@@ -97,7 +98,7 @@ def generate_dataset(dataset_path, desired_positive_categories, desired_negative
 		new_positives = set()
 		for pos in positives:
 			new_positives.add(pos)
-			if random.random() < .8 and should_add_www(pos):
+			if random.random() < .9 and should_add_www(pos):
 				new_positives.add('www.' + pos)
 		positives = new_positives
 
@@ -106,6 +107,9 @@ def generate_dataset(dataset_path, desired_positive_categories, desired_negative
 			new_negatives.add(neg)
 			if random.random() < .8 and should_add_www(neg):
 				new_negatives.add('www.' + neg)
+			if random.random() < .2:
+				generated = generate_random_url(random.choice([i for i in range(8, 30)]))
+				new_negatives.add(generated)
 		negatives = new_negatives
 
 	count = 0
@@ -141,6 +145,12 @@ def should_add_www(url):
 		return False
 	return True
 
+def generate_random_url(N):
+	if random.random() < 0.95:
+		generated = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(N)) + '.com'
+	else:
+		generated = ''.join(random.choice(string.ascii_lowercase + string.digits) for _ in range(N)) + '.net'
+	return generated
 
 if __name__=='__main__':
 	generate_dataset(dataset_path, desired_positive_categories, desired_negative_categories)
