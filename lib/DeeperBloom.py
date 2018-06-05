@@ -70,7 +70,7 @@ class DeeperBloom(object):
                 # TODO BALANCE
                 # TODO FIX curr_positives not carrying through all false negatives
                 # TODO add back difficulty factor stuff?
-                # DIFFICULTY_FACTOR = 1.3
+                DIFFICULTY_FACTOR = 1.2
                 # Get false negatives from curr_positives, with
                 # respect to prev model
                 new_false_negatives = []
@@ -80,7 +80,7 @@ class DeeperBloom(object):
                     pred = preds[j]
                     if pred <= self.thresholds[i - 1]:
                         new_false_negatives.append(false_negatives[j])
-                        if pred <= self.thresholds[i - 1]:
+                        if pred <= self.thresholds[i - 1] / DIFFICULTY_FACTOR:
                             new_positives.append(false_negatives[j])
                 curr_positives = new_positives
                 false_negatives = new_false_negatives
@@ -91,7 +91,7 @@ class DeeperBloom(object):
                 preds = self.models[i - 1].predicts(s1)
                 for j in range(len(s1)):
                     pred = preds[j]
-                    if pred <= self.thresholds[i - 1]:
+                    if pred <= self.thresholds[i - 1] and pred > self.thresholds[i - 1] / 3:
                         new_s1.append(s1[j])
                 s1 = new_s1
 
