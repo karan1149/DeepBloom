@@ -68,7 +68,8 @@ class GRUModel(Model):
 			prelayers.append(GRU(self.second_gru_size))
 
 		if self.hidden_size:
-			prelayers.append(Dense(self.hidden_size))
+			prelayers.append(Dense(self.hidden_size)),
+			prelayers.append(Activation('relu'))
 
 		postlayers = [
 			Dense(1),
