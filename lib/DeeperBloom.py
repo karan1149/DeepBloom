@@ -19,8 +19,9 @@ class DeeperBloom(object):
             self.fp_rates = [float(fp_rate) / (k + 1)] * self.k
         else:
             self.fp_rate_bloom = fp_fractions[self.k] * fp_rate
+            self.fp_rates = []
             for i in range(self.k):
-                self.fp_rates[i] = fp_fractions[i] * fp_rate
+                self.fp_rates.append(fp_fractions[i] * fp_rate)
         self.fit(data)
         self.create_bloom_filter(data)
 
