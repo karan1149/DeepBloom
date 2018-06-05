@@ -4,9 +4,9 @@ import random
 random.seed(42)
 import argparse
 
-parser = argparse.ArgumentParser()
-parser.add_argument("--augment", action="store_true", default=False, help="Whether to augment dataset by adding www. and removing www. when possible.")
-args = parser.parse_args()
+# parser = argparse.ArgumentParser()
+# parser.add_argument("--augment", action="store_true", default=False, help="Whether to augment dataset by adding www. and removing www. when possible.")
+# args = parser.parse_args()
 
 dataset_path = 'shallalist/'
 desired_positive_categories = ['porn', 'models', 'sex/education', 'sex/lingerie']
