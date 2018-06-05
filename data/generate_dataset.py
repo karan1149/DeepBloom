@@ -4,9 +4,9 @@ import random
 random.seed(42)
 import argparse
 
-# parser = argparse.ArgumentParser()
-# parser.add_argument("--augment", action="store_true", default=False, help="Whether to augment dataset by adding www. and removing www. when possible.")
-# args = parser.parse_args()
+parser = argparse.ArgumentParser()
+parser.add_argument("--augment", action="store_true", default=False, help="Whether to augment dataset by adding www. and removing www. when possible.")
+args = parser.parse_args()
 
 dataset_path = 'shallalist/'
 desired_positive_categories = ['porn', 'models', 'sex/education', 'sex/lingerie']
@@ -90,12 +90,31 @@ def generate_dataset(dataset_path, desired_positive_categories, desired_negative
 	print(initial_positive_length - len(positives), "duplicate positives removed.")
 	print(initial_negative_length - len(negatives), "duplicate negatives removed.")
 
+
+	# augment if needed
+	if args.augment:
+		print("Before augmentation", len(positives), len(negatives))
+		new_positives = set()
+		for pos in positives:
+			new_positives.add(pos)
+			if random.random() < .8 and should_add_www(pos):
+				new_positives.add('www.' + pos)
+		positives = new_positives
+
+		new_negatives = set()
+		for neg in negatives:
+			new_negatives.add(neg)
+			if random.random() < .8 and should_add_www(neg):
+				new_negatives.add('www.' + neg)
+		negatives = new_negatives
+
 	count = 0
 	for x in positives:
 		if x in negatives:
 			negatives.remove(x)
 			count += 1
 	print(count, "duplicates removed across lists by removing from negatives.")
+
 
 	positives = list(positives)
 	negatives = list(negatives)
@@ -113,6 +132,14 @@ def generate_dataset(dataset_path, desired_positive_categories, desired_negative
 		json.dump({"positives": positives, "negatives": negatives}, f)
 
 	print("Finished!")
+
+def should_add_www(url):
+	if url.startswith('www'):
+		return False
+	first_letter = ord(url[0])
+	if first_letter < 97 or first_letter > 122:
+		return False
+	return True
 
 
 if __name__=='__main__':
