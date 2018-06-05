@@ -5,11 +5,22 @@ from utils import *
 import mmh3
 
 class DeeperBloom(object):
-    def __init__(self, models, data, fp_rate):
+    '''
+    fp_fractions is an array of size self.k + 1 containing the fraction of the
+    fp_rate dedicated to each of k models, then bloom filter, in that order. If not passed,
+    default to splitting false positives evenly.
+    '''
+    def __init__(self, models, data, fp_rate, fp_fractions=None):
         self.models = models
         self.k = len(self.models)
         self.thresholds = [None] * self.k
-        self.fp_rate = float(fp_rate)
+        if fp_fractions is None:
+            self.fp_rate_bloom = float(fp_rate) / (k + 1)
+            self.fp_rates = [float(fp_rate) / (k + 1)] * self.k
+        else:
+            self.fp_rate_bloom = fp_fractions[self.k] * fp_rate
+            for i in range(self.k):
+                self.fp_rates[i] = fp_fractions[i] * fp_rate
         self.fit(data)
         self.create_bloom_filter(data)
 
@@ -36,7 +47,7 @@ class DeeperBloom(object):
         print("Number of false negatives at bloom time", len(false_negatives))
         self.bloom_filter = BloomFilter(
             len(false_negatives),
-            self.fp_rate / (self.k + 1),
+            self.fp_rate_bloom,
             string_digest
         )
         for fn in false_negatives:
@@ -56,7 +67,8 @@ class DeeperBloom(object):
             else:
                 # TODO BALANCE
                 # TODO FIX curr_positives not carrying through all false negatives
-                DIFFICULTY_FACTOR = 1.3
+                # TODO add back difficulty factor stuff?
+                # DIFFICULTY_FACTOR = 1.3
                 # Get false negatives from curr_positives, with
                 # respect to prev model
                 false_negatives = []
@@ -66,7 +78,7 @@ class DeeperBloom(object):
                     pred = preds[j]
                     if pred <= self.thresholds[i - 1]:
                         false_negatives.append(curr_positives[j])
-                        if pred <= self.thresholds[i - 1] / DIFFICULTY_FACTOR:
+                        if pred <= self.thresholds[i - 1]:
                             new_positives.append(curr_positives[j])
                 curr_positives = new_positives
 
@@ -76,7 +88,7 @@ class DeeperBloom(object):
                 preds = self.models[i - 1].predicts(s1)
                 for j in range(len(s1)):
                     pred = preds[j]
-                    if pred <= self.thresholds[i - 1] and pred > self.thresholds[i - 1] / 4:
+                    if pred <= self.thresholds[i - 1]:
                         new_s1.append(s1[j])
                 s1 = new_s1
 
@@ -102,9 +114,9 @@ class DeeperBloom(object):
             self.models[i].fit(shuffled[0], shuffled[1])
             print("Done fitting")
 
-            ## We want a threshold such that at most s2.size * fp_rate/2 elements
+            ## We want a threshold such that at most s2.size * fp_rates[i] elements
             ## are greater than threshold.
-            fp_index = math.ceil((len(s2) * (1 - self.fp_rate/(self.k + 1))))
+            fp_index = math.ceil((len(s2) * (1 - self.fp_rates[i])))
             predictions = self.models[i].predicts(s2)
             predictions.sort()
             self.thresholds[i] = predictions[fp_index]

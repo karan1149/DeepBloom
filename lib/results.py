@@ -40,5 +40,5 @@ if __name__=='__main__':
 		GRUModel('../data/glove.6B.50d-char.txt', 50, pca_embedding_dim=16, maxlen=40, gru_size=16, batch_size=8192, lr=0.005, hidden_size=8, epochs=40), 
 		GRUModel('../data/glove.6B.50d-char.txt', 50, pca_embedding_dim=16, maxlen=40, gru_size=16, batch_size=8192, lr=0.005, hidden_size=8, epochs=40, lstm=True)
 		]
-	test_gru_model(positives, negatives, models, train_dev_fraction=0.95, deeper_bloom=True, fp_rate=0.01)
+	test_gru_model(positives, negatives, models, train_dev_fraction=0.95, deeper_bloom=True, fp_rate=0.01, fp_fractions=[0.25, 0.25, 0.5])
 
