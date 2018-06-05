@@ -46,6 +46,7 @@ class DeeperBloom(object):
             if is_false:      
                 false_negatives.append(data.positives[j])
         print("Number of false negatives at bloom time", len(false_negatives))
+        print("Effective bloom filter false positive rate", self.fp_rate_bloom)
         self.bloom_filter = BloomFilter(
             len(false_negatives),
             self.fp_rate_bloom,
@@ -117,6 +118,7 @@ class DeeperBloom(object):
 
             ## We want a threshold such that at most s2.size * fp_rates[i] elements
             ## are greater than threshold.
+            print("Using effective false positive rate for model", i, self.fp_rates[i])
             fp_index = math.ceil((len(s2) * (1 - self.fp_rates[i])))
             predictions = self.models[i].predicts(s2)
             predictions.sort()
