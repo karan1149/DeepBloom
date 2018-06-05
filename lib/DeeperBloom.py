@@ -15,8 +15,8 @@ class DeeperBloom(object):
         self.k = len(self.models)
         self.thresholds = [None] * self.k
         if fp_fractions is None:
-            self.fp_rate_bloom = float(fp_rate) / (k + 1)
-            self.fp_rates = [float(fp_rate) / (k + 1)] * self.k
+            self.fp_rate_bloom = float(fp_rate) / (self.k + 1)
+            self.fp_rates = [float(fp_rate) / (self.k + 1)] * self.k
         else:
             self.fp_rate_bloom = fp_fractions[self.k] * fp_rate
             self.fp_rates = []
@@ -73,16 +73,17 @@ class DeeperBloom(object):
                 # DIFFICULTY_FACTOR = 1.3
                 # Get false negatives from curr_positives, with
                 # respect to prev model
-                false_negatives = []
+                new_false_negatives = []
                 new_positives = []
-                preds = self.models[i - 1].predicts(curr_positives)
-                for j in range(len(curr_positives)):
+                preds = self.models[i - 1].predicts(false_negatives)
+                for j in range(len(false_negatives)):
                     pred = preds[j]
                     if pred <= self.thresholds[i - 1]:
-                        false_negatives.append(curr_positives[j])
+                        new_false_negatives.append(false_negatives[j])
                         if pred <= self.thresholds[i - 1]:
-                            new_positives.append(curr_positives[j])
+                            new_positives.append(false_negatives[j])
                 curr_positives = new_positives
+                false_negatives = new_false_negatives
 
                 # Get true negatives from s1, with respect to prev
                 # model
@@ -109,6 +110,9 @@ class DeeperBloom(object):
                 #     s1 = s1[:len(curr_positives)]
             print("Number of false negatives at this step", len(false_negatives))
             print("Training model with train, dev, positives", i, len(s1), len(s2), len(curr_positives))
+            random.shuffle(s1)
+            random.shuffle(s2)
+            random.shuffle(curr_positives)
 
             ## Shuffle together subset of negatives and positives.
             ## Then, train the model on this data.

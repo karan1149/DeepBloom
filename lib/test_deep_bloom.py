@@ -90,7 +90,7 @@ def test_deeper_bloom(positives, negatives):
 
     data = Data(positives, train_dev_negatives)
 
-    db = DeeperBloom([AlmostPerfectModel(.2), AlmostPerfectModel(.2)], data, fp_rate)
+    db = DeeperBloom([AlmostPerfectModel(.2), AlmostPerfectModel(.2), AlmostPerfectModel(.2), AlmostPerfectModel(.2)], data, fp_rate)
     print("Bloom filter bits needed", db.bloom_filter.size)
     # for positive in positives:
     #     assert(db.check(positive))
