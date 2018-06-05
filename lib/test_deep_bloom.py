@@ -44,7 +44,7 @@ def test_almost_perfect_model():
             false_positives += 1
     print("Test false positive rate: ", str(100* false_positives / len(test_negatives)) + "%")
 
-def test_gru_model(positives, negatives, model, train_dev_fraction=0.9, deeper_bloom=False, fp_rate=0.01):
+def test_gru_model(positives, negatives, model, train_dev_fraction=0.9, deeper_bloom=False, fp_rate=0.01, fp_fractions=None):
     train_dev_negatives = negatives[:int(train_dev_fraction * len(negatives))]
     test_negatives = negatives[int(train_dev_fraction * len(negatives)):]
     print("Number train, dev", len(train_dev_negatives))
@@ -56,7 +56,7 @@ def test_gru_model(positives, negatives, model, train_dev_fraction=0.9, deeper_b
         db = DeepBloom(model, data, fp_rate)
         print("Params needed", db.model.model.count_params())
     else:
-        db = DeeperBloom(model, data, fp_rate)
+        db = DeeperBloom(model, data, fp_rate, fp_fractions=fp_fractions)
         total = 0.0
         for i in range(db.k):
             print("Params needed for model", i, db.models[i].model.count_params())
