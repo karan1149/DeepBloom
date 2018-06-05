@@ -84,8 +84,11 @@ class GRUModel(Model):
     weights=[embedding_matrix] if not self.pca_embedding_dim else [embedding_matrix_pca]),
 		    Flatten(),
 		    Dense(8),
+		    Activation('relu'),
 		    Dense(4),
+		    Activation('relu'),
 		    Dense(2),
+		    Activation('relu'),
 		    Dense(1),
 		    Activation('sigmoid'),
 		]
